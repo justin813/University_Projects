@@ -1,41 +1,41 @@
 *********************************************
 University of North Florida: SIC/XE assembler
 version date 11/12/2002
-account: n00803515; Tue Oct 13 14:13:29 2015
+account: n00803515; Tue Oct 13 16:37:49 2015
 *********************************************
 ASSEMBLER REPORT
 ----------------
      Loc   Object Code       Source Code
      ---   -----------       -----------
 001- 00100                   	START	100
-002- 00100 07202D            	LDX	MEM	.MEM = MEM USED IN RESW, HERE IT IS 27
+002- 00100 07202A            	LDX	MEM	.MEM = MEM USED IN RESW, HERE IT IS 30
 003- 00103 010003            	LDA   	#3	.A = 3 = NUM TIMES LOOP FOR ARTHIMETIC
-004- 00106 690000            	LDB   	#0     	.B = 0 = ENDING POINT FOR THE LOOP
-005- 00109 6FA027            	LDS   	NUMS,X 	.LOADS STORAGE X THE NUMS STORED
+004- 00106 6B2021            	LDB   	ZERO     	.B = 0 = ENDING POINT FOR THE LOOP
+005- 00109 6FA024            	LDS   	NUMS,X 	.LOADS STORAGE X THE NUMS STORED
 006- 0010C 7F2042            	STS	INV    	.INV HOLDS THE RESW LIST
 007- 0010F 9401              LOP	SUBR  	A,X    	.START OF LOOP, A IS THE ACCUMLATOR TO LOOP BACKWARDS
-008- 00111 6FA01F            	LDS   	NUMS,X 
+008- 00111 6FA01C            	LDS   	NUMS,X 
 009- 00114 AC15              	RMO   	X,T    	.CARRY THE INDEX FROM REGISTER X INTO T
 010- 00116 9003              	ADDR  	A,B    	.SINCE B = 0 WE ADD A'S VALUE TO STORE A
 011- 00118 AC31              	RMO   	B,X    	.THEN WE LOAD X WITH VALUE B
 012- 0011A 7FA034            	STS   	INV,X  	.STORE X INTO LIST
 013- 0011D AC51              	RMO   	T,X    	.NOW WE LOAD T INTO X FOR THE INDEX
-014- 0011F 77200B            	LDT   	ZERO   	.THEN RESET REGISTER T
+014- 0011F 772008            	LDT   	ZERO   	.THEN RESET REGISTER T
 015- 00122 A015              	COMPR 	X,T    
 016- 00124 372FE8            	JGT   	LOP
-017- 00127 332FE5            	JEQ   	LOP
-018- 0012A 4F0000            	RSUB
-019- 0012D 000000            ZERO	WORD  	0
-020- 00130 00001B            MEM	WORD  	27
-021- 00133 00005D            NUMS	WORD  	93
-022- 00136 000032            	WORD	50
-023- 00139 0000C5            	WORD  	197
-024- 0013C 000037            	WORD	55
-025- 0013F 000060            	WORD  	96
-026- 00142 000041            	WORD  	65
-027- 00145 00004A            	WORD  	74
-028- 00148 00005C            	WORD  	92
-029- 0014B 00002B            	WORD  	43
-030- 0014E 000008            	WORD  	8
-031- 00151                   INV	RESW  	9
-032- 0016C                   	END
+017- 00127 4F0000            	RSUB
+018- 0012A 000000            ZERO	WORD  	0
+019- 0012D 00001E            MEM	WORD  	30
+020- 00130 00005D            NUMS	WORD  	93
+021- 00133 000032            	WORD	50
+022- 00136 0000C5            	WORD  	197
+023- 00139 000037            	WORD	55
+024- 0013C 000060            	WORD  	96
+025- 0013F 000041            	WORD  	65
+026- 00142 00004A            	WORD  	74
+027- 00145 00005C            	WORD  	92
+028- 00148 00002B            	WORD  	43
+029- 0014B 000008            	WORD  	8
+030- 0014E 000006            	WORD	6
+031- 00151                   INV	RESW  	10
+032- 0016F                   	END
