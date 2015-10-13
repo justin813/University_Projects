@@ -1,0 +1,71 @@
+SIC SIMULATOR V1.6
+File names are:
+loader                                 
+DEVF1                                  
+DEVF2                                  
+DEVF3                                  
+DEV04                                  
+DEV05                                  
+DEV06                                  
+COMMAND: A(CCEPT file names, R(ENAME 1 or more files
+r
+loader                                 
+DEVF1                                  
+projectTwo.obj
+DEVF2                                  
+DEVF3                                  
+DEV04                                  
+DEV05                                  
+DEV06                                  
+File names are:
+loader                                 
+projectTwo.obj                         
+DEVF2                                  
+DEVF3                                  
+DEV04                                  
+DEV05                                  
+DEV06                                  
+COMMAND: A(CCEPT file names, R(ENAME 1 or more files
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+s
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+r
+  1000 INSTRUCTIONS EXECUTED
+P=00006E
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+r
+  1000 INSTRUCTIONS EXECUTED
+P=000071
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+r
+  1000 INSTRUCTIONS EXECUTED
+P=000034
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+r
+  1000 INSTRUCTIONS EXECUTED
+P=00006B
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+r
+ATTEMPT TO READ DEVF1 PAST END OF FILE
+P=000053
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+d 100-170
+
+0100 07202D01 00036900 006FA027 7F204294
+0110 016FA01F AC159003 AC317FA0 34AC5177
+0120 200BA015 372FE833 2FE54F00 00000000
+0130 00001B00 005D0000 320000C5 00003700
+0140 00600000 4100004A 00005C00 002B0000
+0150 08000008 00002B00 005C0000 4A000041
+0160 00006000 00370000 C5000032 00005D00
+0170 001BFFFF FFFFFFFF FFFFFFFF FFFFFFFF
+
+COMMAND: S(TART, R(UN, E(NTER, D(UMP, H(COUNT, B(KPT, F(ILES, T(RACE, Q(UIT?
+q
