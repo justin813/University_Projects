@@ -1,0 +1,31 @@
+Nagavarun Kanaparthy
+10/13/2015
+Project 2
+--------------------
+This program is to demonstrate knowledge and practice with the SIC/XE language.
+
+Goal:	To reverse a string
+
+Implementation:	I load a string through many words. 
+	Then I use a loop to go through each word and place it in a 10 word variable
+	in reverse. The oringal string starts at 130 to 151. The reversed strig starts
+	at 151 to 16f. In my case the string is 10 words long. And the List of  is 
+	defined from the word NUMS which has all the remaing words below it and then
+	displays the string in reverse.
+
+Modifications for increase/decreasing string size and words to reverse: 
+	x = number of words. NUMS = Words
+	1. modify the word MEM to 3*x.
+	2. In addition modify variable INV to x
+	3. Modify NUMS to hold x number items.
+	
+	E.g. I want to reverse a 12 word string.
+	x = 12;
+	1. MEM WORD 36
+	2. INV RESW 12
+	3. NUMS WORD 10
+			WORD 13
+			WORD 13
+			WORD 13
+			WORD 13
+			WORD 13
