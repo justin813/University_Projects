@@ -1,3 +1,4 @@
+# Project 2
 
 This object of this program is to implement a critical section (CS) 
 by message passing.  The messages are sent down Unix pipes.  
@@ -62,10 +63,10 @@ Here is how the STORE_MANAGER should behave:
 
 STORE_MANAGER receives messages that consist of, in sequence:
 
-    o An Origin Code ['1' for PROC1, '2' for PROC2] 
-    o An Origin id [the process id of the sending process]
-    o A message code ['U' for TABLE_UPDATE, 'R' for TABLE_READ] 
-    o The  operands required by the corresponding operation 
+    - An Origin Code ['1' for PROC1, '2' for PROC2] 
+    - An Origin id [the process id of the sending process]
+    - A message code ['U' for TABLE_UPDATE, 'R' for TABLE_READ] 
+    - The  operands required by the corresponding operation 
           [hence for TABLE_UPDATE, the 'U' will be followed by a
           TABLE_ID id and by a TABLE_ELEM value, 
           while for TABLE_READ, the 'R' will be followed only 
