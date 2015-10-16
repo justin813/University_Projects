@@ -30,6 +30,9 @@ void error(char *msg){
 int main(int argc, char *argv[])
 {
     //create Server TCP/IP socket listener
+    //Port Number and Hostname initialization
+    uint32_t portNumber = 8686;
+    char* hostName = "192.168.0.1";
     /*
     - Socket server connection
     - Socket client connection
@@ -41,24 +44,22 @@ int main(int argc, char *argv[])
     */
     int sock, newForwardedSocket, portNum, clientlength;
     struct sockaddr_in serverAddress, clientAddress;
-    char buffer[256];
+    char bufferIn[1024], bufferOut[1024];
     int socketAddressSize;
     //Initializes the socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
             perror("Socket Failed to Initialize");
             exit(2);
         }
-
     //Sets the socket options
     if (setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&true,sizeof(int)) == -1) {
         perror("Setsockopt");
         exit(3);
     }
-
-    //Give the socket a name
+    //Give the socket a name, port, and address
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htone
-
+    serverAddress.sin_port = htons(portNumber);
+    inet_aton(hostName, &serverAddress.sin_addr.s_addr);
     //close server
     close(sock);
     return 0;
