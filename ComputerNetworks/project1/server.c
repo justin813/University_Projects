@@ -56,10 +56,29 @@ int main(int argc, char *argv[])
         perror("Setsockopt");
         exit(3);
     }
-    //Give the socket a name, port, and address
+    //Give the socket a name, port, address
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(portNumber);
     inet_aton(hostName, &serverAddress.sin_addr.s_addr);
+    //Initialize serverAddress with 0s
+    bzero(&(serverAddress.sin_zero),8);
+    //Bind socket toward server
+    if (bind(sock, (struct sockaddr *)&serverAddress,
+        sizeof(struct serverAddress)) == -1)
+        {
+            perror("Unable to bind");
+            exit(4);
+        }
+    //Start listening on the server with max of 10 simultanious connections
+    if (listen(sock, 10) == -1) {
+            perror("Listen");
+            exit(5);
+        }
+
+	printf("\nTCPServer Waiting for client on port 5000");
+    fflush(stdout);
+
+    puts("Connected\n");
     //close server
     close(sock);
     return 0;
