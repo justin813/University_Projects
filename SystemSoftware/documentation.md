@@ -24,7 +24,6 @@ Modifications for increase/decreasing string size and words to reverse:
 	x = 12;
 	1. MEM WORD 33
 	2. INV RESW 11
-
 	3. NUMS WORD 17
 		WORD 18
 		WORD 12
