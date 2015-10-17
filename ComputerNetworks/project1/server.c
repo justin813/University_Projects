@@ -22,6 +22,10 @@ Program Details:
 #include <time.h>
 #include <bool.h>
 
+#define BUFSIZE 256
+
+void openClientAccess(int clientPort);
+
 void error(char *msg){
     perror(msg);
     exit(1);
@@ -42,9 +46,9 @@ int main(int argc, char *argv[])
     - Buffer (values from/to Server)
     - Define socket address size
     */
-    int sock, newForwardedSocket, portNum, clientlength;
+    int sock, clientSock, newForwardedSocket, portNum, clientlength, pid;
     struct sockaddr_in serverAddress, clientAddress;
-    char bufferIn[1024], bufferOut[1024];
+    //char bufferIn[256], bufferOut[256];
     int socketAddressSize;
     //Initializes the socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -75,11 +79,88 @@ int main(int argc, char *argv[])
             exit(5);
         }
 
-	printf("\nTCPServer Waiting for client on port 5000");
+	printf("\nTCPServer Waiting for client on port 8686");
     fflush(stdout);
-
-    puts("Connected\n");
+    clientlength = sizeof(clientAddress);
+    /*
+   * main loop: wait for a connection request, echo connected line,
+   * then close connection.
+   */
+    while(true){
+        //accept connection request
+        clientSock = accept(sock, (struct sockaddr *) &clientAddress.sin_addr,
+            &clientlength);
+        if (clientlength < 0)
+            error("ERROR on accept");
+        pid = fork();
+        if (pid < 0) {
+            perror("ERROR on fork");
+            exit(1);
+        }
+        if (pid == 0) {
+            /* This is the client process */
+            //allows client to be redirected to another port
+            close(sock);
+            openClientAccess(clientSock);
+            exit(0);
+        }
+        else
+        {
+            close(clientSock);
+        }
+    }
     //close server
     close(sock);
     return 0;
+}
+void openClientAccess(int clientPort){
+    char buffer[256];
+    bzero(buffer,256);
+    write(clientPort,"Welcome please enter a number use.\n",buffer);
+    programMenu(int clientPort);
+}
+void programMenu(int clientPort){
+    int n;
+    char buffer[256];
+    bzero(buffer,256);
+    bool running = true;
+    char data[];
+    char menu[] = "1. Host current Date and Time\n2. Host uptime\n3. Host" +
+        " memory use\n4. Host Netstat\n5. Host current users\n"+
+        "6. Host running processes\n7. Quit\n";
+    char invaild[] = "Invaild Choice\n";
+    while (running) {
+        write(clientPort, menu, sizeof(menu));
+        n = read(clientPort,buffer,255);
+        switch (atoi(n)) {
+            //Option 1 displays the Date and Time realtive to the host in UTC
+            case 1:
+                break;
+            //Option 2 tells how long server has been up
+            case 2:
+                break;
+            //Option 3 tells how much memory it takes on host
+            case 3:
+                data[] = "";
+                break;
+            //Option 4 returns Netstat results
+            case 4:
+                break;
+            //Option 5 reports how many users are in use
+            case 5:
+                break;
+            //Option 6 displays running processes
+            case 6:
+                break;
+            //Option 7 quit
+            case 7:
+                data[] = "GoodBye\n";
+                running = false;
+                break;
+            default:
+                data[] = "\n";
+                break;
+        }
+        write(clientPort, data, sizeof(data));
+    }
 }
