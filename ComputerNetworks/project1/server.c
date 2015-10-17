@@ -19,20 +19,38 @@ Program Details:
 #include <errno.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/sysinfo.h>
 #include <time.h>
 #include <bool.h>
 
 #define BUFSIZE 256
-
+//Initialization
 void openClientAccess(int clientPort);
-
+static void startTimersAndSysInfo();
+//Program functions
+static char[] getHostCurrentTime();
+static char[] getHostUptime();
+static char[] getHostMemUsage();
+static char[] getHostRunningProccesses();
+static double getMillisecondExecution();
+static char[] getNetStats();
+static char[] getUsers();
+//error response
 void error(char *msg){
     perror(msg);
     exit(1);
 }
 
+//Global Variables
+static clock_t start;
+static struct sysinfo info;
+/*
+Main Program Starts here
+*/
 int main(int argc, char *argv[])
 {
+    //Initialize timer and host data
+    startTimersAndSysInfo();
     //create Server TCP/IP socket listener
     //Port Number and Hostname initialization
     uint32_t portNumber = 8686;
@@ -82,6 +100,9 @@ int main(int argc, char *argv[])
 	printf("\nTCPServer Waiting for client on port 8686");
     fflush(stdout);
     clientlength = sizeof(clientAddress);
+    //Print out time it took to Initialize
+    printf("Time elapsed to grab port : %f milliseconds\n"
+    , getMillisecondExecution());
     /*
    * main loop: wait for a connection request, echo connected line,
    * then close connection.
@@ -92,6 +113,9 @@ int main(int argc, char *argv[])
             &clientlength);
         if (clientlength < 0)
             error("ERROR on accept");
+        //Print out time it took to initialize child
+        printf("Attempting To spawn child at : %f milliseconds\n"
+                , getMillisecondExecution());
         pid = fork();
         if (pid < 0) {
             perror("ERROR on fork");
@@ -101,8 +125,9 @@ int main(int argc, char *argv[])
             /* This is the client process */
             //allows client to be redirected to another port
             close(sock);
+            printf("Successfully spawned child at : %f milliseconds\n"
+                    , getMillisecondExecution());
             openClientAccess(clientSock);
-            exit(0);
         }
         else
         {
@@ -112,6 +137,27 @@ int main(int argc, char *argv[])
     //close server
     close(sock);
     return 0;
+}
+/*
+Functions:
+Initialize
+- openClientAccess
+- startTimersAndSysInfo
+Program functions
+-programMenu
+-getHostCurrentTime
+-getHostUptime
+-getHostMemUsage
+-getHostRunningProccesses
+*/
+static void startTimersAndSysInfo(){
+    //start timer
+    start = clock();
+    //get host data
+    int error = sysinfo(&info);
+    if(error != 0){
+        printf("code error = %d\n", error);
+    }
 }
 void openClientAccess(int clientPort){
     char buffer[256];
@@ -135,22 +181,27 @@ void programMenu(int clientPort){
         switch (atoi(n)) {
             //Option 1 displays the Date and Time realtive to the host in UTC
             case 1:
+                data[] = getHostCurrentTime();
                 break;
             //Option 2 tells how long server has been up
             case 2:
+                data[] = getHostUptime();
                 break;
             //Option 3 tells how much memory it takes on host
             case 3:
-                data[] = "";
+                data[] = getHostMemUsage();
                 break;
             //Option 4 returns Netstat results
             case 4:
+                data[] = getNetStats();
                 break;
             //Option 5 reports how many users are in use
             case 5:
+                data[] = getUsers();
                 break;
             //Option 6 displays running processes
             case 6:
+                data[] = getHostRunningProccesses();
                 break;
             //Option 7 quit
             case 7:
@@ -158,9 +209,73 @@ void programMenu(int clientPort){
                 running = false;
                 break;
             default:
-                data[] = "\n";
+                data[] = "Please select a vaild number of 1 to 7.\n";
                 break;
         }
         write(clientPort, data, sizeof(data));
     }
+}
+static char[] getHostCurrentTime(){
+    time_t current_time;
+    char* c_time_string;
+
+    /* Obtain current time as seconds elapsed since the Epoch. */
+    current_time = time(NULL);
+
+    if (current_time == ((time_t)-1))
+    {
+        c_time_string = "ERROR: Failed To Calculate Time\n";
+    }
+
+    /* Convert to local time format. */
+    c_time_string = ctime(&current_time);
+
+    if (c_time_string == NULL)
+    {
+        c_time_string = "ERROR: Failed To Convert To Local TimeZone\n";
+    }
+
+    return c_time_string;
+}
+static char[] getHostUptime(){
+    return "The Host's Uptime is " + info.uptime +" seconds\n";
+}
+static char[] getHostMemUsage(){
+    return "The Program is using " + info.mem_unit +" Bytes of memory\n";
+}
+static char[] getHostRunningProccesses(){
+    return "The Host has " + info.procs +" processes running\n";
+}
+static char[] getNetStats(){
+    FILE *fp;
+    int status;
+    char path[1035];
+    char data[];
+    fp = fopen("/proc/net/tcp", "r");
+    if (fp == NULL) {
+        printf("Failed to run Netstat command\n" );
+        exit(1);
+    }
+    while (fgets(path, sizeof(path), fp) != NULL) {
+        data += path;
+    }
+    return "The Host's Netstat is\n"+ data + "\n";
+}
+static char[] getUsers(){
+    FILE *fp;
+    int status;
+    char path[1035];
+    char data[];
+    fp = fopen("/proc/net/tcp", "r");
+    if (fp == NULL) {
+        printf("Failed to run Netstat command\n" );
+        exit(1);
+    }
+    while (fgets(path, sizeof(path), fp) != NULL) {
+        data += path;
+    }
+    return "The Host's Netstat is\n"+ data;
+}
+static double getMillisecondExecution(){
+    return ((double)clock() - start)/ CLOCKS_PER_SEC;
 }
