@@ -34,8 +34,8 @@ static char* getHostUptime();
 static char* getHostMemUsage();
 static char* getHostRunningProccesses();
 static double getMillisecondExecution();
-static char* getNetStats();
-static char* getUsers();
+static void getNetStats(int clientPort);
+static void getUsers(int clientPort);
 //error response
 void error(char *msg){
     perror(msg);
@@ -45,6 +45,7 @@ void error(char *msg){
 //Global Variables
 static clock_t start;
 static struct sysinfo info;
+static char buffer[256];
 /*
 Main Program Starts here
 */
@@ -55,7 +56,7 @@ int main(int argc, char *argv[])
     //create Server TCP/IP socket listener
     //Port Number and Hostname initialization
     uint32_t portNumber = 8686;
-    char* hostName = "192.168.0.1";
+    char* hostName = "127.0.0.1";
     /*
     - Socket server connection
     - Socket client connection
@@ -97,11 +98,11 @@ int main(int argc, char *argv[])
             perror("Listen");
             exit(5);
         }
-	printf("\nTCPServer Waiting for client on port 8686");
+	printf("\nTCPServer Waiting for client on port 8686\n");
     fflush(stdout);
     clientlength = sizeof(clientAddress);
     //Print out time it took to Initialize
-    printf("Time elapsed to grab port : %f milliseconds\n"
+    printf("\nTime elapsed to grab port : %f milliseconds\n"
     , getMillisecondExecution());
     /*
    * main loop: wait for a connection request, echo connected line,
