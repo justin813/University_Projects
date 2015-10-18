@@ -160,7 +160,7 @@ static void startTimersAndSysInfo(){
     }
 }
 void openClientAccess(int clientPort){
-    char buffer[256];
+    
     char* data = "Welcome please enter a number use.\n";
     bzero(buffer,256);
     write(clientPort,data,sizeof(data));
@@ -237,14 +237,25 @@ static char* getHostCurrentTime(){
     return c_time_string;
 }
 static char* getHostUptime(){
-    return strcat("The Host's Uptime is ", info.uptime +" seconds\n");
+	char data[250];
+	sprintf(data, "The Host's Uptime is %ld seconds\n", info.uptime);
+	strcpy(buffer, data);
+    return buffer;
 }
 static char* getHostMemUsage(){
-	return strcat("The Program is using ", info.mem_unit +" Bytes of memory\n");
+	char data[250];
+	sprintf(data, "The Program is using %ld Bytes of memory\n", info.bufferram);
+	strcpy(buffer, data);
+    return buffer;
 }
 static char* getHostRunningProccesses(){
-
-    return strcat("The Host has ", info.procs +" processes running\n");
+	char data[250];
+	sprintf(data, "The Host has %d processes running\n", info.procs);
+	strcpy(buffer, data);
+    return buffer;
+}
+static double getMillisecondExecution(){
+    return ((double)clock() - start)/ CLOCKS_PER_SEC;
 }
 static char* getNetStats(){
     FILE *fp;
@@ -276,7 +287,4 @@ static char* getUsers(){
         data = strcat(data, path);
     }
     return strcat( "The Host's Netstat is\n", data);
-}
-static double getMillisecondExecution(){
-    return ((double)clock() - start)/ CLOCKS_PER_SEC;
 }
