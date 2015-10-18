@@ -21,20 +21,21 @@ Program Details:
 #include <sys/types.h>
 #include <sys/sysinfo.h>
 #include <time.h>
-#include <bool.h>
+#include <stdbool.h>
 
 #define BUFSIZE 256
 //Initialization
 void openClientAccess(int clientPort);
 static void startTimersAndSysInfo();
 //Program functions
-static char[] getHostCurrentTime();
-static char[] getHostUptime();
-static char[] getHostMemUsage();
-static char[] getHostRunningProccesses();
+void programMenu(int clientPort);
+static char* getHostCurrentTime();
+static char* getHostUptime();
+static char* getHostMemUsage();
+static char* getHostRunningProccesses();
 static double getMillisecondExecution();
-static char[] getNetStats();
-static char[] getUsers();
+static char* getNetStats();
+static char* getUsers();
 //error response
 void error(char *msg){
     perror(msg);
@@ -68,13 +69,14 @@ int main(int argc, char *argv[])
     struct sockaddr_in serverAddress, clientAddress;
     //char bufferIn[256], bufferOut[256];
     int socketAddressSize;
+	bool t = true;
     //Initializes the socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
             perror("Socket Failed to Initialize");
             exit(2);
         }
     //Sets the socket options
-    if (setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&true,sizeof(int)) == -1) {
+    if (setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&t,sizeof(int)) == -1) {
         perror("Setsockopt");
         exit(3);
     }
@@ -85,8 +87,7 @@ int main(int argc, char *argv[])
     //Initialize serverAddress with 0s
     bzero(&(serverAddress.sin_zero),8);
     //Bind socket toward server
-    if (bind(sock, (struct sockaddr *)&serverAddress,
-        sizeof(struct serverAddress)) == -1)
+    if (bind(sock, (struct sockaddr *)&serverAddress,sizeof(serverAddress)) == -1)
         {
             perror("Unable to bind");
             exit(4);
@@ -96,7 +97,6 @@ int main(int argc, char *argv[])
             perror("Listen");
             exit(5);
         }
-
 	printf("\nTCPServer Waiting for client on port 8686");
     fflush(stdout);
     clientlength = sizeof(clientAddress);
@@ -161,61 +161,60 @@ static void startTimersAndSysInfo(){
 }
 void openClientAccess(int clientPort){
     char buffer[256];
+    char* data = "Welcome please enter a number use.\n";
     bzero(buffer,256);
-    write(clientPort,"Welcome please enter a number use.\n",buffer);
-    programMenu(int clientPort);
+    write(clientPort,data,sizeof(data));
+    programMenu(clientPort);
 }
 void programMenu(int clientPort){
     int n;
     char buffer[256];
     bzero(buffer,256);
     bool running = true;
-    char data[];
-    char menu[] = "1. Host current Date and Time\n2. Host uptime\n3. Host" +
-        " memory use\n4. Host Netstat\n5. Host current users\n"+
-        "6. Host running processes\n7. Quit\n";
+    char* data;
+    char* menu = "1. Host current Date and Time\n2. Host uptime\n3. Host memory use\n4. Host Netstat\n5. Host current users\n6. Host running processes\n7. Quit\n";
     char invaild[] = "Invaild Choice\n";
     while (running) {
         write(clientPort, menu, sizeof(menu));
         n = read(clientPort,buffer,255);
-        switch (atoi(n)) {
+        switch (n) {
             //Option 1 displays the Date and Time realtive to the host in UTC
             case 1:
-                data[] = getHostCurrentTime();
+                data = getHostCurrentTime();
                 break;
             //Option 2 tells how long server has been up
             case 2:
-                data[] = getHostUptime();
+                data = getHostUptime();
                 break;
             //Option 3 tells how much memory it takes on host
             case 3:
-                data[] = getHostMemUsage();
+                data = getHostMemUsage();
                 break;
             //Option 4 returns Netstat results
             case 4:
-                data[] = getNetStats();
+                data = getNetStats();
                 break;
             //Option 5 reports how many users are in use
             case 5:
-                data[] = getUsers();
+                data = getUsers();
                 break;
             //Option 6 displays running processes
             case 6:
-                data[] = getHostRunningProccesses();
+                data = getHostRunningProccesses();
                 break;
             //Option 7 quit
             case 7:
-                data[] = "GoodBye\n";
+                data = "GoodBye\n";
                 running = false;
                 break;
             default:
-                data[] = "Please select a vaild number of 1 to 7.\n";
+                data = "Please select a vaild number of 1 to 7.\n";
                 break;
         }
         write(clientPort, data, sizeof(data));
     }
 }
-static char[] getHostCurrentTime(){
+static char* getHostCurrentTime(){
     time_t current_time;
     char* c_time_string;
 
@@ -237,44 +236,46 @@ static char[] getHostCurrentTime(){
 
     return c_time_string;
 }
-static char[] getHostUptime(){
-    return "The Host's Uptime is " + info.uptime +" seconds\n";
+static char* getHostUptime(){
+    return strcat("The Host's Uptime is ", info.uptime +" seconds\n");
 }
-static char[] getHostMemUsage(){
-    return "The Program is using " + info.mem_unit +" Bytes of memory\n";
+static char* getHostMemUsage(){
+	return strcat("The Program is using ", info.mem_unit +" Bytes of memory\n");
 }
-static char[] getHostRunningProccesses(){
-    return "The Host has " + info.procs +" processes running\n";
+static char* getHostRunningProccesses(){
+
+    return strcat("The Host has ", info.procs +" processes running\n");
 }
-static char[] getNetStats(){
+static char* getNetStats(){
     FILE *fp;
     int status;
-    char path[1035];
-    char data[];
+    char *path;
+    char *data;
     fp = fopen("/proc/net/tcp", "r");
     if (fp == NULL) {
         printf("Failed to run Netstat command\n" );
         exit(1);
     }
     while (fgets(path, sizeof(path), fp) != NULL) {
-        data += path;
+        data = strcat(data, path);
     }
-    return "The Host's Netstat is\n"+ data + "\n";
+	data = strcat("The Host's Netstat is\n",data);
+    return strcat(data, "\n");
 }
-static char[] getUsers(){
+static char* getUsers(){
     FILE *fp;
     int status;
-    char path[1035];
-    char data[];
+    char *path;
+    char *data;
     fp = fopen("/proc/net/tcp", "r");
     if (fp == NULL) {
         printf("Failed to run Netstat command\n" );
         exit(1);
     }
     while (fgets(path, sizeof(path), fp) != NULL) {
-        data += path;
+        data = strcat(data, path);
     }
-    return "The Host's Netstat is\n"+ data;
+    return strcat( "The Host's Netstat is\n", data);
 }
 static double getMillisecondExecution(){
     return ((double)clock() - start)/ CLOCKS_PER_SEC;
