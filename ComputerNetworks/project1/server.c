@@ -192,11 +192,13 @@ void programMenu(int clientPort){
                 break;
             //Option 4 returns Netstat results
             case 4:
-                data = getNetStats();
+                data = "Completed Netstat";
+				getNetStats(clientPort);
                 break;
             //Option 5 reports how many users are in use
             case 5:
-                data = getUsers();
+                data = "completed getting users";
+				getUsers(clientPort);
                 break;
             //Option 6 displays running processes
             case 6:
@@ -257,34 +259,35 @@ static char* getHostRunningProccesses(){
 static double getMillisecondExecution(){
     return ((double)clock() - start)/ CLOCKS_PER_SEC;
 }
-static char* getNetStats(){
-    FILE *fp;
-    int status;
-    char *path;
-    char *data;
-    fp = fopen("/proc/net/tcp", "r");
-    if (fp == NULL) {
-        printf("Failed to run Netstat command\n" );
-        exit(1);
-    }
-    while (fgets(path, sizeof(path), fp) != NULL) {
-        data = strcat(data, path);
-    }
-	data = strcat("The Host's Netstat is\n",data);
-    return strcat(data, "\n");
+static void getNetStats(int clientPort){
+	FILE *fp;
+	char path[1035];
+	/* Open the command for reading. */
+	fp = popen("netstat", "r");
+	if (fp == NULL) {
+		printf("Failed to run command\n" );    
+		exit(1);
+	}
+	/* Read the output a line at a time - output it. */
+	while (fgets(path, sizeof(path)-1, fp) != NULL) {
+		write(clientPort, path, sizeof(path));
+	}
+	/* close */
+	pclose(fp);
 }
-static char* getUsers(){
+static void getUsers(int clientPort){
     FILE *fp;
-    int status;
-    char *path;
-    char *data;
-    fp = fopen("/proc/net/tcp", "r");
-    if (fp == NULL) {
-        printf("Failed to run Netstat command\n" );
-        exit(1);
-    }
-    while (fgets(path, sizeof(path), fp) != NULL) {
-        data = strcat(data, path);
-    }
-    return strcat( "The Host's Netstat is\n", data);
+	char path[1035];
+	/* Open the command for reading. */
+	fp = popen("awk -F':' '{ print $1}' /etc/passwd", "r");
+	if (fp == NULL) {
+		printf("Failed to run command\n" );    
+		exit(1);
+	}
+	/* Read the output a line at a time - output it. */
+	while (fgets(path, sizeof(path)-1, fp) != NULL) {
+		write(clientPort, path, sizeof(path));
+	}
+	/* close */
+	pclose(fp);
 }
