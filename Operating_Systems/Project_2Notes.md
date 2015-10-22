@@ -18,14 +18,14 @@ Job:	A	C	B	D
 Time:	0-7	7-8	8-12	12-14
 
 Shortest Remaining Time (SRT)
-Job:	A	B	C		B	A	D	A
-Time:	0-2	2-5	5-6		6-7	7-9	9-11	11-14
+Job:	A	B	C	B	A	D	A
+Time:	0-2	2-5	5-6	6-7	7-9	9-11	11-14
 
 Round Robin (RR)
 In this example we give the Round Robin's
-Queue:  
-Job:  A
-Time: 0-3
+Queue:	A	BA	ACB	CBDA	BDA	DA	A
+Job:	A	B	A	C	B	D	A
+Time:	0-3	3-6	6-9	9-10	10-11	11-13	13-14
 ```
 ### Data Structures
 ```
