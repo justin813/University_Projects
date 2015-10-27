@@ -6,6 +6,7 @@ public class serverMultiThreaded {
         //This is my portNumber
         int portNumber = 3515;
         boolean listening = true;
+        System.out.println("Server Started Up");
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             while (listening) {
 	            new projectOneMultiServerThread(serverSocket.accept()).start();
@@ -37,6 +38,7 @@ class projectOneMultiServerThread extends Thread {
                     new InputStreamReader(
                     socket.getInputStream()));
             //return message to client
+            System.out.println("Client connected on port: " + socket.getPort());
             out.println("Connection Accepted");
             //loop
             while(true){
@@ -56,6 +58,7 @@ class projectOneMultiServerThread extends Thread {
                 out.println("---Response-Compelete---");
             }
             socket.close();
+            System.out.println("Client on port: " + socket.getPort()+" Exited");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -109,7 +112,7 @@ class projectOneMultiServerThread extends Thread {
             // read the output from the command
             String s = null;
             while ((s = stdInput.readLine()) != null) {
-                data += s + "\n";
+                data += "\n" + s;
             }
             while ((s = stdError.readLine()) != null) {
                 error += s;

@@ -7,7 +7,7 @@ import java.net.*;
 
 public class client {
     public static void main(String[] args) throws IOException {
-        String hostName = "127.0.0.1";
+        String hostName = "139.62.210.150";
         int port = 3515;
         Socket clientSocket = new Socket(hostName, port);
         //Attempt To open communications between the server and client
@@ -25,7 +25,7 @@ public class client {
             String serverResponse;
             String userResponse;
             while ((serverResponse = in.readLine()) != null) {
-                System.out.println("Server Response :\n"+ serverResponse +"\n");
+                System.out.println(serverResponse);
                 //the program to exit uses the string "Exit\n"
                 if (serverResponse.equals("Exit")){
                     System.out.println("Goodbye Program Exiting\n");
